@@ -1,26 +1,31 @@
 {
   "name": "nexusstore",
   "version": "0.1.0",
-  "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
+    "dev": "tsx watch --include ./src/**/* src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "db:migrate": "prisma migrate dev",
+    "db:generate": "prisma generate",
+    "prepare": "prisma generate",
+    "seed": "npx tsx prisma/seed.ts"
   },
+  "type": "module",
   "dependencies": {
-    "next": "16.2.4",
-    "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "@prisma/client": "^6.19.3",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "16.2.4",
-    "tailwindcss": "^4",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^20.19.39",
+    "prisma": "~6.19.3",
     "typescript": "^5"
+  },
+  "imports": {
+    "#services/*.js": "./dist/Services/*.js",
+    "#store/*.js": "./dist/Store/*.js",
+    "#bank/*.js": "./dist/Bank/*.js"
   }
 }

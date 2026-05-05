@@ -1,0 +1,62 @@
+generator client {
+  provider   = "prisma-client-js"
+  engineType = "library"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id          Int        @id @default(autoincrement())
+  name        String
+  description String
+  price       Float
+  image       String
+  category    Category
+  stock       Int
+  cartItems   CartItem[]
+}
+
+model ShoppingCart {
+  id      Int        @id @default(autoincrement())
+  monto   Float      @default(0)
+  items   CartItem[]
+  clients Client[]
+}
+
+model CartItem {
+  id       Int @id @default(autoincrement())
+  quantity Int @default(1)
+
+  // Relaciones
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+
+  shoppingCart   ShoppingCart @relation(fields: [shoppingCartId], references: [id])
+  shoppingCartId Int
+}
+
+enum Category {
+  CONSUME
+  INDUSTRIAL
+  SERVICES
+  DIGITAL
+}
+
+model Client {
+  id             Int           @id @default(autoincrement())
+  user           String        @unique
+  password       String
+  cart           ShoppingCart? @relation(fields: [shoppingCartId], references: [id])
+  cartId         Int?          @unique
+  shoppingCartId Int?
+}
+
+model ClientATM {
+  id       Int     @id @default(autoincrement())
+  user     String  @unique
+  password String
+  balance  Decimal @default(0.00) @db.Decimal(12, 2)
+}
