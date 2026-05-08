@@ -69,4 +69,45 @@ export class BankService {
       },
     });
   }
-}
+  public async RegisterUser(userData: Prisma.ClientATMCreateInput): Promise<ClientATM | null> {
+    try {
+      return await this.prisma.clientATM.create({
+        data: userData
+      });
+    } catch (error) {
+      console.error("Error to RegisterUser:", error);
+      return null;
+    }
+  }
+
+  public async TryAccess(user: string, pass: string): Promise<ClientATM | null> {
+    const account = await this.prisma.clientATM.findUnique({
+      where: { user: user }
+    });
+
+    if (!account || account.password !== pass) {
+      return null;
+    }
+
+    return account;
+  }
+  public async GetUserById(id: number): Promise<ClientATM | null> {
+    return await this.prisma.clientATM.findUnique({
+      where: { id: id }
+    });
+  }
+  public async TopUp(userId: number, monto: number): Promise<ClientATM | null> {
+    const amount = new Prisma.Decimal(monto);
+    try {
+      return await this.prisma.clientATM.update({
+        where: { id: userId },
+        data: {
+          balance: { increment: amount },
+        },
+      });
+    } catch (error) {
+      console.error("Error in TopUp:", error);
+      return null;
+    }
+  }
+};
