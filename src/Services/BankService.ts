@@ -9,6 +9,9 @@ export class BankService {
   ) {
     this.taxes = new Prisma.Decimal(x);
   }
+  public getTaxRate(): number {
+    return this.taxes.toNumber();
+  }
 
   public async ChargePayment(
     monto: number,
@@ -17,8 +20,9 @@ export class BankService {
   ): Promise<boolean> {
     const amount = new Prisma.Decimal(monto);
     const taxAmount = amount.mul(this.taxes);
-    const totalToDeduct = amount.add(taxAmount);
-
+    const totalToDeduct = amount
+      .add(taxAmount)
+      .toDecimalPlaces(2, Prisma.Decimal.ROUND_HALF_UP);
     try {
       return await this.prisma.$transaction(async (tx) => {
         const clientUpdated = await this.DeductMoney(
@@ -26,8 +30,8 @@ export class BankService {
           clientId,
           tx,
         );
-        if (!clientUpdated) throw new Error("Insufficient funds");
 
+        if (!clientUpdated) throw new Error("Insufficient funds");
         await this.GiveMoney(amount, sealerId, tx);
 
         return true;
@@ -69,10 +73,12 @@ export class BankService {
       },
     });
   }
-  public async RegisterUser(userData: Prisma.ClientATMCreateInput): Promise<ClientATM | null> {
+  public async RegisterUser(
+    userData: Prisma.ClientATMCreateInput,
+  ): Promise<ClientATM | null> {
     try {
       return await this.prisma.clientATM.create({
-        data: userData
+        data: userData,
       });
     } catch (error) {
       console.error("Error to RegisterUser:", error);
@@ -80,9 +86,12 @@ export class BankService {
     }
   }
 
-  public async TryAccess(user: string, pass: string): Promise<ClientATM | null> {
+  public async TryAccess(
+    user: string,
+    pass: string,
+  ): Promise<ClientATM | null> {
     const account = await this.prisma.clientATM.findUnique({
-      where: { user: user }
+      where: { user: user },
     });
 
     if (!account || account.password !== pass) {
@@ -93,7 +102,7 @@ export class BankService {
   }
   public async GetUserById(id: number): Promise<ClientATM | null> {
     return await this.prisma.clientATM.findUnique({
-      where: { id: id }
+      where: { id: id },
     });
   }
   public async TopUp(userId: number, monto: number): Promise<ClientATM | null> {
@@ -110,4 +119,4 @@ export class BankService {
       return null;
     }
   }
-};
+}

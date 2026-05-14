@@ -2,23 +2,39 @@
   "name": "nexusstore",
   "version": "0.1.0",
   "type": "module",
+  "author": "StubbornRuby763",
   "scripts": {
-    "dev:build": "npx tsc",
-    "dev:watch:build": "npx tsc -w",
-    "dev:node": "nodemon --watch dist dist/Bank/backend/index.js",
-    "dev:back": "run-p dev:watch:build dev:node",
-    "dev:front": "esbuild src/Bank/frontend/login.tsx src/Bank/frontend/dashboard.tsx --bundle --outdir=public/bank --sourcemap --servedir=public",
-    "dev:tail": " npx @tailwindcss/cli -i ./src/Bank/input.css -o ./public/bank/output.css ",
-    "dev": "run-p dev:back dev:front dev:tail",
-    "build:back": "tsc",
-    "build:front": "esbuild src/Bank/frontend/index.tsx --bundle --minify --sourcemap --outfile=public/bundle.js",
-    "build:tail": "npx @tailwindcss/cli -i ./src/input.css -o ./public/output.css",
-    "build": "run-s db:generate build:tail build:front build:back",
-    "start": "node dist/index.js",
+    "// --- COMMON ---": "",
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate",
     "seed": "npx tsx prisma/seed.ts",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "dev:watch:build": "npx tsc -w --preserveWatchOutput",
+
+    "// --- BANK SCRIPTS ---": "",
+    "dev:bank:node": "nodemon --watch dist/Bank/backend --watch dist/Services --delay 1 dist/Bank/backend/index.js",
+    "dev:bank:front": "esbuild src/Bank/frontend/login.tsx src/Bank/frontend/dashboard.tsx src/Bank/frontend/loginWith.tsx --bundle --outdir=public/bank --sourcemap ",
+    "dev:bank:tail": "npx @tailwindcss/cli -i ./src/Bank/input.css -o ./public/bank/output.css --watch",
+    "dev:bank": "run-p dev:watch:build dev:bank:node dev:bank:front dev:bank:tail",
+    
+    "build:bank:back": "tsc",
+    "build:bank:front": "esbuild src/Bank/frontend/login.tsx src/Bank/frontend/dashboard.tsx --bundle --minify --outdir=public/bank",
+    "build:bank:tail": "npx @tailwindcss/cli -i ./src/Bank/input.css -o ./public/bank/output.css",
+
+    "// --- STORE SCRIPTS ---": "",
+    "dev:store:node": "nodemon --watch dist/Store/backend --watch dist/Services --delay 1 dist/Store/backend/server.js",
+    "dev:store:front": "esbuild src/Store/frontend/index.tsx --bundle --outfile=public/store/index.js --loader:.png=file --servedir=public ",
+    "dev:store:tail": "npx tailwindcss -i ./src/Store/input.css -o ./public/store/output.css --content ./src/Store/**/*.{js,jsx,ts,tsx} --watch",
+    "dev:store": "run-p dev:watch:build dev:store:node dev:store:front dev:store:tail",
+
+    "build:store:front": "esbuild src/Store/frontend/index.tsx --bundle --minify --outdir=public/store --loader:.png=file",
+    "build:store:tail": "npx tailwindcss -i ./src/Store/input.css -o ./public/store/output.css --content ./src/Store/**/*.{js,jsx,ts,tsx}",
+
+    "// --- UNIFIED COMMANDS ---": "",
+    "dev": "run-p dev:watch:build dev:bank:node dev:bank:front dev:bank:tail dev:store:node dev:store:front dev:store:tail",
+    "build": "run-s db:generate build:bank:tail build:bank:front build:store:tail build:store:front build:bank:back",
+    "start:bank": "node dist/Bank/backend/index.js",
+    "start:store": "node dist/Store/backend/server.js"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",
@@ -30,6 +46,7 @@
     "lucide-react": "^0.400.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
+    "react-router-dom": "^7.15.0",
     "recharts": "^2.12.0",
     "tailwindcss": "^4.2.4"
   },

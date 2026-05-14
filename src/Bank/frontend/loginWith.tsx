@@ -1,9 +1,9 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { Login } from "./components/Validate.js";
+import { LoginWith } from "./components/LogWith.js";
 
-const App = () => {
-  return <Login userInitial="" passwordInitial="" />;
+const Logwith = () => {
+  return <LoginWith />;
 };
 
 const container = document.getElementById("root");
@@ -12,7 +12,7 @@ if (container) {
   const root = createRoot(container);
   root.render(
     <React.StrictMode>
-      <App />
+      <Logwith />
     </React.StrictMode>,
   );
 }

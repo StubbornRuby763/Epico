@@ -45,3 +45,12 @@ next-env.d.ts
 /prisma/*.db
 
 
+#css
+public/**/*.css
+#assets
+public/assets
+src/Store/assets
+public/**/*.js
+public/**/*.js.map
+
+notes/

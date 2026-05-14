@@ -10,14 +10,26 @@ datasource db {
 
 model Product {
   id          Int        @id @default(autoincrement())
-  name        String
+  name        String     @unique
   description String
   price       Float
   image       String
   category    Category
   stock       Int
+  popularity  Int        @default(0)
   cartItems   CartItem[]
+  discount ProductDiscount?
 }
+
+model ProductDiscount{
+  id        Int     @id @default(autoincrement())
+  percent   Int     // Ejemplo: 20 para 20%
+  isActive  Boolean @default(true)
+  
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int     @unique 
+}
+
 
 model ShoppingCart {
   id      Int        @id @default(autoincrement())
@@ -36,6 +48,7 @@ model CartItem {
 
   shoppingCart   ShoppingCart @relation(fields: [shoppingCartId], references: [id])
   shoppingCartId Int
+  @@unique([productId, shoppingCartId])
 }
 
 enum Category {
@@ -43,15 +56,18 @@ enum Category {
   INDUSTRIAL
   SERVICES
   DIGITAL
+  SUBSCRIPTION
 }
-
 model Client {
-  id             Int           @id @default(autoincrement())
-  user           String        @unique
-  password       String
-  cart           ShoppingCart? @relation(fields: [shoppingCartId], references: [id])
-  cartId         Int?          @unique
-  shoppingCartId Int?
+  id       Int           @id @default(autoincrement())
+  user     String        @unique
+  password String
+  
+  // Relación unificada
+  cart     ShoppingCart? @relation(fields: [cartId], references: [id])
+  cartId   Int?          @unique // Solo este, borra shoppingCartId
+  
+  image    String
 }
 
 model ClientATM {

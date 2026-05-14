@@ -1,47 +1,22 @@
-# NexusStore Documentation
+# NexusStore && Pixel Bank Documentation
 
 ## Architecture Overview
 
-NexusStore is a modular e-commerce platform that demonstrates the implementation of secure payment processing through OAuth2 authentication and Prisma ORM for database management. The system simulates a microservices architecture where a **Store** communicates with a **Bank** service to process payments securely.
+NexusStore and Pixel Bank operate under a microservices-based architecture, designed to simulate a real-world e-commerce and banking workflow.
+Core Components
 
----
+Pixel Bank: A simplified banking simulator that acts as the financial backend. It handles transaction validation and account management.
 
-**Microservices with OAuth2** provide:
-- Realistic security simulation
-- Independent scalability  
-- Fault isolation
-- Clean separation of business domains
+NexusStore: A modular e-commerce platform built to demonstrate secure payment processing. It utilizes Prisma ORM for efficient database management and high-performance data handling.
 
-**Prisma ORM with TypeScript** provides:
-- End-to-end type safety
-- Reduced boilerplate code
-- Automatic migration management
-- Intelligent IDE support
-- Faster development cycles
+## Key Features & Security
 
-The combination creates a robust, maintainable, and secure e-commerce platform that demonstrates production-ready patterns while maintaining developer productivity.
+**OAuth2 Authentication**: The system implements secure authorization flows, ensuring that sensitive customer data is never directly exposed during the payment process.
 
----
+**Simulated Microservices**: The architecture focuses on the communication between the Store (Service A) and the Bank (Service B), simulating an API-driven transaction environment.
 
-## Structure
-``` Markdown
-src/
-├── Store/
-│   └── Managers/
-│       └── ProductManager.ts
-├── Bank/
-│   ├── BankApi.ts
-│   ├── Routes.ts
-│   └── Server.ts
-├── Services/
-│   ├── BankService.ts
-│   └── ProductService.ts
-└── index.ts
-```
+**Database Integrity**: Using Prisma, the system maintains a structured and type-safe schema for products, users, and transaction logs.
 
-Para que cualquiera que descargue tu proyecto pueda ejecutarlo, lo ideal es poner las instrucciones en una sección llamada **Prerequisites** (Requisitos previos) en tu `README.md`.
-
-Aquí tienes cómo redactarlo de forma clara y técnica:
 
 ---
 

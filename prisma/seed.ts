@@ -4,58 +4,46 @@ const prisma = new PrismaClient()
 
 async function main() {
   console.log('--- Starting Seed ---')
-
-  // 1. Create a shopping cart
-  const cart = await prisma.shoppingCart.create({
-    data: {
-      monto: 0,
-    }
-  })
-
-  // 2. Create a Client and link it to the Cart
   const client = await prisma.client.upsert({
-    where: { user: 'testuser' },
+    where: { user: 'root' },
     update: {},
     create: {
-      id: 1, // Force ID 1 for your test
-      user: 'testuser',
-      password: 'password123',
-      shoppingCartId: cart.id
-    }
+      user: 'root',
+      password: 'admin',
+      //configure with the url image
+      image: "",
+      cart: {
+        create: { monto: 0 }
+      }
+    },
+    include: { cart: true }
   })
 
-  // 3. Create a test Product
   const product = await prisma.product.upsert({
-    where: { id: 1 },
+    where: { name: 'Secret' }, 
     update: {},
     create: {
-      id: 1, // Force ID 1 for your test
-      name: 'Laptop Gamer',
-      description: 'A very powerful laptop',
-      price: 1500.00,
-      image: 'https://via.placeholder.com/150',
+      name: 'Secret',
+      description: 'A secret',
+      price: 100000.00,
+      //configure
+      image: '',
       category: Category.DIGITAL,
       stock: 50
     }
   })
 
-  // 4. Create a Bank Client (ATM) with sufficient balance
   await prisma.clientATM.upsert({
-    where: { user: 'testuser' },
-    update: {},
+    where: { user: 'root' },
+    update: { balance: 10000.00 },
     create: {
-      user: 'testuser',
-      password: 'password123',
-      balance: 10000.00 // Give them 10k so they can make purchases
+      user: 'root',
+      password: 'admin',
+      balance: 10000.00
     }
   })
 
-  console.log({
-    message: '✅ Data seeded successfully',
-    clientCreated: client.user,
-    productId: product.id,
-    cartId: cart.id
-  })
+  console.log('Seeding finished successfully')
 }
 
 main()
