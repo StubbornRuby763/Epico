@@ -40,8 +40,8 @@ npm install -g typescript
 ## Setup and Use
 
 ```bash
-git clone https://github.com/StubbornRuby763/Epico
-cd Epico
+git clone https://github.com/StubbornRuby763/Nexus-Store.git
+cd Nexus-Store
 
 npm install
 
